@@ -22,7 +22,7 @@ from pathlib import Path
 import cairosvg
 
 ROOT = Path(__file__).resolve().parent.parent
-IMGS = ROOT / "com.paulomoraesdev.musiccontrols.sdPlugin" / "imgs"
+IMGS = ROOT / "com.paulomoraesdev.applemusic.sdPlugin" / "imgs"
 
 WHITE = "#FFFFFF"
 ACCENT = "#4AC3FF"

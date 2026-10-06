@@ -1,96 +1,127 @@
-# Stream Deck+ Plugin for Apple Music
+# Apple Music for Stream Deck+
 
-A Stream Deck plugin for the macOS Music app. Nine actions: seven keys and two dials.
+Control the Music app on your Mac straight from a Stream Deck: transport keys, playback toggles,
+one-press playlists and two Stream Deck+ dials.
 
-Written from scratch against the [Stream Deck SDK](https://docs.elgato.com/streamdeck/sdk/)
-and the Music app's AppleScript dictionary. No code, artwork, or assets from any other
-plugin.
+> [!WARNING]
+> This is a personal project, shared in case someone else finds it handy. It comes with no
+> support, no warranty and no promise of future updates. You use it at your own risk.
 
-This is a plugin I created for my personal use and released to the public in-case it's
-useful to anyone else. It is not supported software, and I make no guarantees on
-performance or future releases. **Use at your own risk**.
+## At a glance
 
-It was written entirely with Claude Code. The images and some of the copy associated with the plugin were also generated with Claude.
+- **9 actions**: 7 keys and 2 dials
+- Built from the ground up on the [Stream Deck SDK](https://docs.elgato.com/streamdeck/sdk/) and
+  the AppleScript dictionary of Music. It contains no code, artwork or assets taken from other plugins.
+- The code was written with Claude Code. Claude also generated the images and part of the
+  plugin's text.
 
-## Actions
+## What's included
 
-| Action | Controller | Behaviour |
-| --- | --- | --- |
-| Play / Pause | Key | Toggles playback, showing the current album art. Paused dims the cover behind a play triangle; playing adds a small pause badge. |
-| Next Track | Key | Skips forward. |
-| Previous Track | Key | Within 3s, steps back a track; after that, restarts the current one. |
-| Shuffle | Key | Toggles shuffle, showing the current state. |
-| Repeat | Key | Cycles off → all → one. |
-| Favorite | Key | Favorites the current track (falls back to `loved` on older Music versions). |
-| Playlist | Key | Starts a specific playlist, optionally turning shuffle on first. |
-| Volume | Dial | Rotate for volume, push to play/pause, tap for next track. |
-| Transport | Dial | Rotate to change track, push or tap to play/pause. The strip shows the track and artist. |
+### Keys
 
-## Design notes
+- **Play / Pause**: starts or stops playback and uses the current album cover as the key image.
+  When paused, the cover is dimmed and a play triangle sits on top. While playing, a small pause
+  badge shows in the corner.
+- **Next Track**: moves to the next song.
+- **Previous Track**: in the first 3 seconds of a song, goes to the previous track. After that,
+  it restarts the song that is playing.
+- **Shuffle**: turns shuffle on or off. The key shows which state is active.
+- **Repeat**: steps through *off*, *all* and *one*, then back to *off*.
+- **Favorite**: marks the current song as a favorite. On older versions of Music it uses `loved`
+  instead.
+- **Playlist**: starts the playlist you choose. It can turn shuffle on before it starts.
 
-**One poller, not nine.** Every visible action subscribes to a single shared timer that reads
-Music once per second in one `osascript` call. Nine actions on a page means one process per
-second, not nine — the Marketplace guidelines cap plugins at ten updates per second. The
-timer stops entirely when no action is visible, and backs off to 5s while Music is closed.
+### Dials (Stream Deck+)
 
-**Never launch Music to read it.** Whether Music is running is decided in Node with `pgrep`,
-not in AppleScript. Entering a `tell application "Music"` block starts the app, which would
-be hostile on a once-per-second poll, and asking AppleScript the question instead means
-compiling app terminology on every poll — itself a failure mode when the app is closed.
-Commands do use `tell`: pressing Play should open Music.
+| Dial | Rotate | Press | Touch |
+| --- | --- | --- | --- |
+| **Volume** | changes the volume | play / pause | next track |
+| **Transport** | changes track | play / pause | play / pause |
 
-**Unknown is not off.** Every field Music declines to report comes back as `undefined`, never
-as a zero or a false. An earlier version defaulted a failed read to "off", which made the
-toggles one-way (every press computed "turn it on") and sent the volume dial to 0%. Where a
-reading is genuinely unavailable, the control falls back to what it last wrote, and defers to
-Music the instant a real reading arrives.
+The Transport dial's touch strip shows the song title and the artist.
 
-**Failures are logged.** The osascript wrapper reports stderr rather than swallowing it. A
-silent `undefined` is indistinguishable from "Music says everything is off", which is how two
-releases shipped undiagnosable.
+## How it works
 
-**Artwork is composited, not layered.** `sips` normalises whatever Music hands back -- JPEG,
-TIFF, a 3000px scan -- into a 144px PNG, and `png.ts` draws the state indicator onto the
-pixels. The alternative, an SVG wrapping the art in a data URI, would make the result depend
-on Stream Deck's SVG renderer honouring a nested `<image>`, which this plugin cannot verify.
-A plain PNG has no such question over it.
+### A single shared poller
 
-**The macOS 26 `current track` defect.** On Tahoe and later, `current track` raises `-1728`
-for Apple Music catalogue tracks, autoplayed tracks, and anything played from the Home,
-Radio or Recently Added tabs. Library tracks played from Songs or an album still work
-([FB19908171](https://developer.apple.com/forums/thread/798267)). Every track property is
-therefore read in its own `try`, so a title that fails does not take the volume and playback
-state down with it. When Music is playing something it will not name, the Transport dial shows
-"Playing" rather than going blank, and Favorite shows an alert rather than appearing to work.
+The actions don't poll Music one by one. Every visible action subscribes to one timer, and that
+timer reads Music once per second in a single `osascript` call. So a page with all nine actions
+still starts only one process per second. That matters because the Marketplace guidelines allow
+at most ten updates per second per plugin. When no action is on screen, the timer stops. While
+Music is closed, it slows down to one check every 5 seconds.
 
-**Dials coalesce.** A fast spin fires one rotation event per detent. Writing each one would
-queue dozens of `osascript` processes and lag seconds behind the user's hand. Instead the
-target is accumulated locally, the touch strip updates immediately, and a single write is
-flushed once the spin stops. Incoming polls are ignored for 700ms after the last rotation, so
-a stale reading never yanks the dial backwards.
+### Reading state never opens Music
 
-## Building
+The plugin checks whether Music is running from Node, using `pgrep`, and never from AppleScript.
+Any `tell application "Music"` block launches the app, which you don't want happening every
+second. Asking AppleScript instead would also mean compiling the app's terminology on every poll,
+and that fails on its own when Music is closed. Commands work differently: they *do* use `tell`,
+because pressing Play is supposed to open Music.
+
+### "Unknown" is different from "off"
+
+If Music doesn't report a field, the value is `undefined`. It is never turned into `0` or `false`.
+An earlier version treated a failed read as "off". As a result the toggles only worked in one
+direction (every press decided to "turn it on"), and the volume dial dropped to 0%. Now, when a
+value really can't be read, the control uses the last value it wrote. As soon as Music returns a
+real reading, the control follows Music again.
+
+### Errors get logged
+
+The `osascript` wrapper logs stderr instead of hiding it. A silent `undefined` looks exactly like
+Music saying everything is off, and that is how two releases shipped with problems nobody could
+diagnose.
+
+### Artwork is baked into one PNG
+
+Music returns covers as JPEG, TIFF, or sometimes 3000-pixel scans. `sips` converts them all to a
+144 px PNG, and `png.ts` draws the state indicator directly onto those pixels. The other option
+was an SVG with the artwork embedded as a data URI. That would depend on Stream Deck's SVG
+renderer supporting a nested `<image>`, which the plugin has no way to confirm. A plain PNG
+avoids the question entirely.
+
+### Working around `current track` on macOS 26
+
+On macOS Tahoe and later, `current track` fails with error `-1728` for Apple Music catalogue
+songs, autoplay songs, and anything started from the Home, Radio or Recently Added tabs. Library
+songs played from Songs or from an album still work
+([FB19908171](https://developer.apple.com/forums/thread/798267)). Because of this, each track
+property is read inside its own `try`. If the title can't be read, volume and playback state are
+still reported. When Music is playing something it won't identify, the Transport dial shows
+"Playing" instead of going blank, and Favorite shows an alert instead of pretending it worked.
+
+### Dial input is batched
+
+A fast turn sends one rotation event per detent. Writing each one would queue dozens of
+`osascript` processes, and the dial would lag seconds behind your hand. Instead, the target value
+is added up locally and the touch strip updates right away. A single write goes out once the
+dial stops turning. For 700 ms after the last rotation, incoming polls are ignored, so an old
+reading can't pull the dial backwards.
+
+## Development
 
 ```bash
 npm install
-npm run build          # bundles src/ into the .sdPlugin folder
-npm run check          # typecheck
-npx streamdeck validate org.paulomoraesdev.applemusic.sdPlugin
-npx streamdeck pack org.paulomoraesdev.applemusic.sdPlugin
+npm run build    # compiles src/ into the .sdPlugin folder
+npm run check    # runs the type checker
+npx streamdeck validate com.paulomoraesdev.applemusic.sdPlugin
+npx streamdeck pack com.paulomoraesdev.applemusic.sdPlugin
 ```
 
-Icons are generated, not hand-drawn — `python3 tools/make-icons.py` redraws every SVG and PNG
-from the geometry in that script.
+**Icons:** all of them are generated by code. `python3 tools/make-icons.py` rebuilds every SVG
+and PNG from the shapes defined in that script.
 
-`src/music/png.ts` is a self-contained PNG decoder, encoder and compositor. It is the one part
-of this plugin that can be tested without a Mac, and it is tested: round-trip against all five
-8-bit colour types `sips` can emit.
+**Tests:** `src/music/png.ts` is a standalone PNG decoder, encoder and compositor. It is the only
+part of the plugin that can be tested without a Mac. Its tests run a round trip through all five
+8-bit color types that `sips` can output.
 
-## Requirements
+## Compatibility
 
-- macOS 12 or later
-- Stream Deck 6.5 or later (dials need 6.5+)
+| | Minimum version |
+| --- | --- |
+| macOS | 12 |
+| Stream Deck | 6.5 (required for the dials) |
 
 ## License
 
-MIT
+Released under the [MIT License](LICENSE).
