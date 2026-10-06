@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
-	"Name": "Cue for Apple Music",
+	"Name": "Apple Music by PMD",
 	"UUID": "com.paulomoraesdev.applemusic",
 	"Version": "0.0.1.1",
 	"Author": "Paulo Moraes",
 	"Description": "Control the macOS Music app from your Stream Deck. A play/pause key that shows the current album art, skip, shuffle, repeat, favorite and one-press playlists, with volume and transport on Stream Deck + dials.",
-	"Category": "Cue for Apple Music",
+	"Category": "Apple Music by PMD",
 	"CategoryIcon": "imgs/plugin/category-icon",
 	"Icon": "imgs/plugin/marketplace",
 	"URL": "https://www.paulomoraes.dev",
