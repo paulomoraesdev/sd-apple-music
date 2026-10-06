@@ -1,0 +1,62 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/layout.json",
+	"id": "playback-control",
+	"items": [
+		{
+			"key": "artwork",
+			"type": "pixmap",
+			"rect": [8, 6, 44, 44]
+		},
+		{
+			"key": "track",
+			"type": "text",
+			"rect": [60, 8, 132, 20],
+			"font": { "size": 15, "weight": 600 },
+			"alignment": "left",
+			"text-overflow": "ellipsis"
+		},
+		{
+			"key": "artist",
+			"type": "text",
+			"rect": [60, 30, 132, 18],
+			"font": { "size": 13, "weight": 400 },
+			"color": "#A1A1A6",
+			"alignment": "left",
+			"text-overflow": "ellipsis"
+		},
+		{
+			"key": "position",
+			"type": "text",
+			"rect": [8, 56, 56, 20],
+			"font": { "size": 13, "weight": 500 },
+			"alignment": "left"
+		},
+		{
+			"key": "shuffle",
+			"type": "pixmap",
+			"rect": [72, 56, 20, 20]
+		},
+		{
+			"key": "state",
+			"type": "pixmap",
+			"rect": [108, 56, 20, 20]
+		},
+		{
+			"key": "duration",
+			"type": "text",
+			"rect": [136, 56, 56, 20],
+			"font": { "size": 13, "weight": 500 },
+			"alignment": "right"
+		},
+		{
+			"key": "progress",
+			"type": "bar",
+			"rect": [8, 84, 184, 6],
+			"subtype": 0,
+			"border_w": 0,
+			"bar_bg_c": "#3A3A3C",
+			"bar_fill_c": "#FFFFFF",
+			"value": 0
+		}
+	]
+}

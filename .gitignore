@@ -15,11 +15,6 @@ npm-debug.log*
 # TypeScript
 *.tsbuildinfo
 
-# Python (tools/make-icons.py)
-__pycache__/
-*.pyc
-.venv/
-
 # Environment
 .env
 .env.*

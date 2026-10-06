@@ -101,3 +101,13 @@ Before declaring a task done (run commands only if the human asked — otherwise
 ## 9. Release
 * Bump `Version` in `manifest.json` (four-part, e.g. `1.0.1.0`) for every packed build — with permission (§2).
 * Never modify or remove `LICENSE`.
+
+## 10. Working with Specs
+If the human mention a spec folder, you must read the specs.md file before starting. It will give you the task requirements and guidelines.
+You can use other files inside the spec folder to increase the context, store memory and progress and set the final release for that task.
+
+* context.md: use this file to add context and new/updated infos after clarifying with the human, when needed.
+* progress.md: use this file to track the progress of the task, making sure to update it as you go. This file is very important for new code sessions, as it helps you keep track of what you've done and what's left to do.
+* release.md: this file must contain the release notes for the current task, with what has been implemented and how.
+
+If one of those files is not present, create it and add the relevant information if needed.

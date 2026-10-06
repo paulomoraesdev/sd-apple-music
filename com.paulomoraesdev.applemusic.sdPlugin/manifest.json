@@ -204,25 +204,25 @@
 			]
 		},
 		{
-			"Name": "Transport",
-			"UUID": "com.paulomoraesdev.applemusic.transport-dial",
-			"Icon": "imgs/actions/transport-dial/icon",
-			"Tooltip": "Turn to change track, press to play or pause.",
+			"Name": "Playback Control",
+			"UUID": "com.paulomoraesdev.applemusic.playback-control",
+			"Icon": "imgs/actions/playback-control/icon",
+			"Tooltip": "Now playing, with track, play / pause, shuffle and volume on one dial.",
 			"Controllers": [
 				"Encoder"
 			],
 			"Encoder": {
-				"Icon": "imgs/actions/transport-dial/encoder",
-				"layout": "$A1",
+				"Icon": "imgs/actions/playback-control/encoder",
+				"layout": "layouts/playback-control.json",
 				"TriggerDescription": {
-					"Rotate": "Change Track",
-					"Push": "Play / Pause",
+					"Rotate": "Change Track · Pressed: Volume",
+					"Push": "Play / Pause · Hold: Shuffle",
 					"Touch": "Play / Pause"
 				}
 			},
 			"States": [
 				{
-					"Image": "imgs/actions/transport-dial/key"
+					"Image": "imgs/actions/playback-control/key"
 				}
 			]
 		}

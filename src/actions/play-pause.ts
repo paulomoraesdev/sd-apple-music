@@ -7,7 +7,8 @@ import streamDeck, {
 	type WillDisappearEvent,
 } from "@elgato/streamdeck";
 
-import { getArtwork, playPause, type MusicStatus } from "../music/applescript.js";
+import { playPause, type MusicStatus } from "../music/applescript.js";
+import { artworkFor } from "../music/artwork-cache.js";
 import { buildKeyImage } from "../music/artwork-key.js";
 import { poller } from "../music/poller.js";
 
@@ -40,9 +41,6 @@ const TITLE_WIDTH = 16;
 export class PlayPause extends SingletonAction<PlayPauseSettings> {
 	/** Visible keys, mapped to their unsubscribe function and last rendered signature. */
 	readonly #bound = new Map<string, { unsubscribe: () => void; signature: string }>();
-
-	/** Raw artwork bytes, cached against the track they belong to. */
-	#artwork: { trackId: string; png: Buffer | undefined } | undefined;
 
 	/** Composited key image, cached against the track and state it was built for. */
 	#cache: { key: string; image: string | undefined } | undefined;
@@ -156,11 +154,7 @@ export class PlayPause extends SingletonAction<PlayPauseSettings> {
 
 		// Artwork is cached separately from the composite: pressing play must not refetch the
 		// cover just because the badge changed.
-		if (this.#artwork?.trackId !== status.trackId) {
-			this.#artwork = { trackId: status.trackId, png: await getArtwork() };
-		}
-
-		const png = this.#artwork.png;
+		const png = await artworkFor(status.trackId);
 		const image = png === undefined ? undefined : buildKeyImage(png, playing, badge);
 
 		if (png !== undefined && image === undefined) {

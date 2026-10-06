@@ -24,7 +24,7 @@ export function buildKeyImage(png: Buffer, playing: boolean, badge: boolean): st
 		return undefined;
 	}
 
-	const canvas = fitToSquare(image);
+	const canvas = fitToSquare(image, SIZE);
 
 	if (badge) {
 		if (playing) {
@@ -38,28 +38,46 @@ export function buildKeyImage(png: Buffer, playing: boolean, badge: boolean): st
 }
 
 /**
- * Centre-crops and scales artwork to the square key canvas.
- *
- * Nearest-neighbour is fine here: `sips` has already resampled the cover to within a few
- * pixels of the target, so this is a small correction, not a real downscale.
- * @param image Decoded artwork.
- * @returns A square bitmap at key size.
+ * Turns album art into a plain square image for the touch strip, with no state indicator.
+ * @param png Album art as PNG bytes, already normalised to roughly key size.
+ * @param size Edge length of the output, in pixels.
+ * @returns A data URI for `setFeedback`, or undefined if the art could not be decoded.
  */
-function fitToSquare(image: Bitmap): Bitmap {
-	const out: Bitmap = { width: SIZE, height: SIZE, data: Buffer.alloc(SIZE * SIZE * 4, 0) };
+export function buildStripArtwork(png: Buffer, size: number): string | undefined {
+	let image: Bitmap;
+	try {
+		image = decodePng(png);
+	} catch {
+		return undefined;
+	}
+
+	return `data:image/png;base64,${encodePng(fitToSquare(image, size)).toString("base64")}`;
+}
+
+/**
+ * Centre-crops and scales artwork to a square canvas.
+ *
+ * Nearest-neighbour is fine for the key: `sips` has already resampled the cover to within a
+ * few pixels of the target, so this is a small correction, not a real downscale.
+ * @param image Decoded artwork.
+ * @param size Edge length of the output, in pixels.
+ * @returns A square bitmap of the requested size.
+ */
+function fitToSquare(image: Bitmap, size: number): Bitmap {
+	const out: Bitmap = { width: size, height: size, data: Buffer.alloc(size * size * 4, 0) };
 
 	// Cover, not contain: a non-square sleeve fills the key rather than sitting in letterbox
 	// bars, which look like a rendering bug on a small black key.
-	const scale = Math.max(SIZE / image.width, SIZE / image.height);
-	const offsetX = (image.width * scale - SIZE) / 2;
-	const offsetY = (image.height * scale - SIZE) / 2;
+	const scale = Math.max(size / image.width, size / image.height);
+	const offsetX = (image.width * scale - size) / 2;
+	const offsetY = (image.height * scale - size) / 2;
 
-	for (let y = 0; y < SIZE; y++) {
+	for (let y = 0; y < size; y++) {
 		const sourceY = Math.min(image.height - 1, Math.max(0, Math.floor((y + offsetY) / scale)));
 
-		for (let x = 0; x < SIZE; x++) {
+		for (let x = 0; x < size; x++) {
 			const sourceX = Math.min(image.width - 1, Math.max(0, Math.floor((x + offsetX) / scale)));
-			image.data.copy(out.data, (y * SIZE + x) * 4, (sourceY * image.width + sourceX) * 4, (sourceY * image.width + sourceX) * 4 + 4);
+			image.data.copy(out.data, (y * size + x) * 4, (sourceY * image.width + sourceX) * 4, (sourceY * image.width + sourceX) * 4 + 4);
 		}
 	}
 

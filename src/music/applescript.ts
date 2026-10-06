@@ -363,14 +363,20 @@ function command(body: string, context: string, timeoutMs?: number): Promise<str
 	return osascript(`tell application "Music"\n${body}\nend tell`, context, timeoutMs);
 }
 
-/** Toggles between playing and paused, starting Music if it is not running. */
-export async function playPause(): Promise<void> {
-	await command("playpause", "Play/pause");
+/**
+ * Toggles between playing and paused, starting Music if it is not running.
+ * @returns True when Music accepted the command.
+ */
+export async function playPause(): Promise<boolean> {
+	return (await command("playpause", "Play/pause")) !== undefined;
 }
 
-/** Advances to the next track. */
-export async function nextTrack(): Promise<void> {
-	await command("next track", "Next track");
+/**
+ * Advances to the next track.
+ * @returns True when Music accepted the command.
+ */
+export async function nextTrack(): Promise<boolean> {
+	return (await command("next track", "Next track")) !== undefined;
 }
 
 /**
@@ -378,9 +384,10 @@ export async function nextTrack(): Promise<void> {
  *
  * Matches the convention every hardware media remote uses: within the first three seconds a
  * press steps back a track, and after that it restarts the track you are on.
+ * @returns True when Music accepted the command.
  */
-export async function previousTrack(): Promise<void> {
-	await command(
+export async function previousTrack(): Promise<boolean> {
+	const out = await command(
 		`	try
 		if (player position) < 3 then
 			previous track
@@ -392,6 +399,8 @@ export async function previousTrack(): Promise<void> {
 	end try`,
 		"Previous track",
 	);
+
+	return out !== undefined;
 }
 
 /**
@@ -406,9 +415,10 @@ export async function setVolume(volume: number): Promise<void> {
 /**
  * Turns shuffle on or off.
  * @param enabled Desired shuffle state.
+ * @returns True when Music accepted the command.
  */
-export async function setShuffle(enabled: boolean): Promise<void> {
-	await command(`set shuffle enabled to ${enabled ? "true" : "false"}`, "Set shuffle");
+export async function setShuffle(enabled: boolean): Promise<boolean> {
+	return (await command(`set shuffle enabled to ${enabled ? "true" : "false"}`, "Set shuffle")) !== undefined;
 }
 
 /**
