@@ -1,0 +1,230 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+	"Name": "Cue for Apple Music",
+	"UUID": "com.paulomoraesdev.applemusic",
+	"Version": "0.0.1.1",
+	"Author": "Paulo Moraes",
+	"Description": "Control the macOS Music app from your Stream Deck. A play/pause key that shows the current album art, skip, shuffle, repeat, favorite and one-press playlists, with volume and transport on Stream Deck + dials.",
+	"Category": "Cue for Apple Music",
+	"CategoryIcon": "imgs/plugin/category-icon",
+	"Icon": "imgs/plugin/marketplace",
+	"URL": "https://www.paulomoraes.dev",
+	"SDKVersion": 2,
+	"CodePath": "bin/plugin.js",
+	"Nodejs": {
+		"Version": "20"
+	},
+	"Software": {
+		"MinimumVersion": "6.5"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		}
+	],
+	"ApplicationsToMonitor": {
+		"mac": [
+			"com.apple.Music"
+		]
+	},
+	"Actions": [
+		{
+			"Name": "Play / Pause",
+			"UUID": "com.paulomoraesdev.applemusic.play-pause",
+			"Icon": "imgs/actions/play-pause/icon",
+			"Tooltip": "Toggle playback in Music.",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"PropertyInspectorPath": "ui/play-pause.html",
+			"States": [
+				{
+					"Image": "imgs/actions/play-pause/play",
+					"TitleAlignment": "bottom",
+					"FontSize": 10
+				},
+				{
+					"Image": "imgs/actions/play-pause/pause",
+					"TitleAlignment": "bottom",
+					"FontSize": 10
+				}
+			]
+		},
+		{
+			"Name": "Next Track",
+			"UUID": "com.paulomoraesdev.applemusic.next-track",
+			"Icon": "imgs/actions/next-track/icon",
+			"Tooltip": "Skip to the next track.",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/next-track/key",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Previous Track",
+			"UUID": "com.paulomoraesdev.applemusic.previous-track",
+			"Icon": "imgs/actions/previous-track/icon",
+			"Tooltip": "Go back a track, or restart the current one.",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/previous-track/key",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Shuffle",
+			"UUID": "com.paulomoraesdev.applemusic.shuffle",
+			"Icon": "imgs/actions/shuffle/icon",
+			"Tooltip": "Turn shuffle on or off.",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/shuffle/off",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/shuffle/on",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Repeat",
+			"UUID": "com.paulomoraesdev.applemusic.repeat",
+			"Icon": "imgs/actions/repeat/icon",
+			"Tooltip": "Cycle repeat off, all, one.",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/repeat/off",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/repeat/all",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/repeat/one",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Favorite",
+			"UUID": "com.paulomoraesdev.applemusic.favorite",
+			"Icon": "imgs/actions/favorite/icon",
+			"Tooltip": "Favorite or unfavorite the current track.",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/favorite/off",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/favorite/on",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Playlist",
+			"UUID": "com.paulomoraesdev.applemusic.playlist",
+			"Icon": "imgs/actions/playlist/icon",
+			"Tooltip": "Start a specific playlist.",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/playlist.html",
+			"States": [
+				{
+					"Image": "imgs/actions/playlist/key",
+					"TitleAlignment": "bottom",
+					"FontSize": 10
+				}
+			]
+		},
+		{
+			"Name": "Current Playlist",
+			"UUID": "com.paulomoraesdev.applemusic.current-playlist",
+			"Icon": "imgs/actions/playlist/icon",
+			"Tooltip": "Show the name of the playlist that is playing.",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/playlist/key",
+					"TitleAlignment": "bottom",
+					"FontSize": 10
+				}
+			]
+		},
+		{
+			"Name": "Volume",
+			"UUID": "com.paulomoraesdev.applemusic.volume-dial",
+			"Icon": "imgs/actions/volume-dial/icon",
+			"Tooltip": "Turn to change Music's volume.",
+			"Controllers": [
+				"Encoder"
+			],
+			"PropertyInspectorPath": "ui/volume-dial.html",
+			"Encoder": {
+				"Icon": "imgs/actions/volume-dial/encoder",
+				"layout": "$B1",
+				"TriggerDescription": {
+					"Rotate": "Volume",
+					"Push": "Play / Pause",
+					"Touch": "Next Track"
+				}
+			},
+			"States": [
+				{
+					"Image": "imgs/actions/volume-dial/key"
+				}
+			]
+		},
+		{
+			"Name": "Transport",
+			"UUID": "com.paulomoraesdev.applemusic.transport-dial",
+			"Icon": "imgs/actions/transport-dial/icon",
+			"Tooltip": "Turn to change track, press to play or pause.",
+			"Controllers": [
+				"Encoder"
+			],
+			"Encoder": {
+				"Icon": "imgs/actions/transport-dial/encoder",
+				"layout": "$A1",
+				"TriggerDescription": {
+					"Rotate": "Change Track",
+					"Push": "Play / Pause",
+					"Touch": "Play / Pause"
+				}
+			},
+			"States": [
+				{
+					"Image": "imgs/actions/transport-dial/key"
+				}
+			]
+		}
+	]
+}

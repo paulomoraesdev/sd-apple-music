@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="sdpi.css" />
+		<script src="sdpi.js"></script>
+	</head>
+	<body>
+		<div class="item">
+			<label for="artwork">Artwork</label>
+			<div class="control">
+				<input id="artwork" type="checkbox" data-setting="showArtwork" checked />
+				<label for="artwork">Show the current album art on the key</label>
+			</div>
+		</div>
+
+		<div class="item">
+			<label for="badge">Indicator</label>
+			<div class="control">
+				<input id="badge" type="checkbox" data-setting="showBadge" checked />
+				<label for="badge">Mark whether it is playing</label>
+			</div>
+		</div>
+
+		<div class="item">
+			<label for="title">Title</label>
+			<div class="control">
+				<input id="title" type="checkbox" data-setting="showTitle" />
+				<label for="title">Print the track title across the bottom</label>
+			</div>
+		</div>
+
+		<p class="hint">
+			With the indicator on, paused dims the art behind a play triangle and playing adds a
+			small pause badge. Turn it off for the cover alone.
+		</p>
+	</body>
+</html>

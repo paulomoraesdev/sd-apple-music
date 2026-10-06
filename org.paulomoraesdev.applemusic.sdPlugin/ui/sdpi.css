@@ -1,0 +1,75 @@
+/* Matches the Stream Deck property inspector's native look without importing a framework. */
+:root {
+	color-scheme: dark;
+	--fg: #d8d8d8;
+	--fg-dim: #969696;
+	--bg: #2d2d2d;
+	--field: #3d3d3d;
+	--accent: #4ac3ff;
+}
+
+body {
+	margin: 0;
+	padding: 12px 8px;
+	background: var(--bg);
+	color: var(--fg);
+	font: 9pt/1.5 -apple-system, "Segoe UI", sans-serif;
+}
+
+.item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 26px;
+	margin-bottom: 6px;
+}
+
+.item > label:first-child {
+	flex: 0 0 94px;
+	text-align: right;
+	color: var(--fg-dim);
+}
+
+.control {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+select,
+input[type="text"],
+input[type="number"] {
+	flex: 1 1 auto;
+	min-width: 0;
+	padding: 3px 6px;
+	border: none;
+	border-radius: 3px;
+	background: var(--field);
+	color: var(--fg);
+	font: inherit;
+}
+
+input[type="range"] {
+	flex: 1 1 auto;
+	min-width: 0;
+	accent-color: var(--accent);
+}
+
+input[type="checkbox"] {
+	accent-color: var(--accent);
+	width: 14px;
+	height: 14px;
+}
+
+output {
+	flex: 0 0 34px;
+	color: var(--fg-dim);
+	font-variant-numeric: tabular-nums;
+}
+
+.hint {
+	margin: 10px 8px 0 102px;
+	color: var(--fg-dim);
+	font-size: 8pt;
+}

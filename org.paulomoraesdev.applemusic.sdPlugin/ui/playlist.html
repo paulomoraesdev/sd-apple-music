@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="sdpi.css" />
+		<script src="sdpi.js"></script>
+	</head>
+	<body>
+		<div class="item">
+			<label for="playlist">Playlist</label>
+			<div class="control">
+				<input
+					id="playlist"
+					type="text"
+					list="playlists"
+					placeholder="Playlist name"
+					data-setting="playlist"
+				/>
+				<datalist id="playlists"></datalist>
+			</div>
+		</div>
+
+		<div class="item">
+			<label for="shuffle">Shuffle</label>
+			<div class="control">
+				<input id="shuffle" type="checkbox" data-setting="shuffle" />
+				<label for="shuffle">Turn shuffle on before playing</label>
+			</div>
+		</div>
+
+		<div class="item">
+			<label for="showName">Label</label>
+			<div class="control">
+				<input id="showName" type="checkbox" data-setting="showName" checked />
+				<label for="showName">Show the playlist name on the key</label>
+			</div>
+		</div>
+
+		<p class="hint" id="hint">The name must match Music exactly.</p>
+
+		<script>
+			// The plugin sends the user's playlists once this inspector appears. Music has to be
+			// running to enumerate them, so this stays a plain text field that a list merely
+			// assists -- an empty dropdown would look broken.
+			window.addEventListener("sdpi.message", (event) => {
+				const payload = event.detail;
+				if (payload?.event !== "playlists") {
+					return;
+				}
+
+				const list = document.getElementById("playlists");
+				const hint = document.getElementById("hint");
+				list.innerHTML = "";
+
+				for (const name of payload.playlists ?? []) {
+					const option = document.createElement("option");
+					option.value = name;
+					list.append(option);
+				}
+
+				hint.textContent = payload.playlists?.length
+					? "Pick one, or type any playlist name."
+					: "Open Music to list your playlists, or type a name exactly as it appears.";
+			});
+		</script>
+	</body>
+</html>

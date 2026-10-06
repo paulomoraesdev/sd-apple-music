@@ -1,0 +1,27 @@
+{
+  "name": "music-controls",
+  "version": "1.0.0",
+  "description": "Stream Deck plugin for the macOS Music app",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c",
+    "check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "Paulo Moraes",
+  "license": "MIT",
+  "dependencies": {
+    "@elgato/streamdeck": "^2.1.2"
+  },
+  "devDependencies": {
+    "@elgato/cli": "^1.9.0",
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^26.6.2",
+    "rollup": "^4.63.4",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
+  },
+  "type": "module"
+}
